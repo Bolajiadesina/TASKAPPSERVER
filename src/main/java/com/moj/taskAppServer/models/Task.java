@@ -18,7 +18,7 @@ public class Task {
     @NonNull
     private String taskDueDate;
 
-    private static final long serialVersionUID = 1L;
+
 
     public Task() {
         // Default constructor

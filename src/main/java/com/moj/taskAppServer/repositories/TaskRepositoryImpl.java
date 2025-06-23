@@ -199,51 +199,45 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public ResponseData delete(Long id) {
-       try (Connection conn = taskDatabase.connect()) {
+    public ResponseData delete(Long taskId) {
+        try (Connection conn = taskDatabase.connect()) {
 
-            conn.setAutoCommit(false);
-            // Prepare the call with proper syntax for procedure with OUT parameters
-            String sql = "call public.delete_task_by_id(?,?, ?)";
+        
+            String sql = "{ ? = call public.delete_task_by_id(?) }";
 
-           try (CallableStatement stmt = conn.prepareCall(sql)) {
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                // Register return parameter
+                stmt.registerOutParameter(1, Types.VARCHAR);
 
-                stmt.setLong(1, id);
+                // Set input parameter
+                stmt.setLong(2, taskId);
 
-                // Register OUT parameters in the correct order
-                stmt.registerOutParameter(2, Types.VARCHAR); // p_response_code
-                
-
-                // Execute the procedure
+                // Execute
                 stmt.execute();
 
                 // Get response code
-                String code = stmt.getString(2);
+                String code = stmt.getString(1);
 
-                if ("00".equals(code)) {
-                    // Process cursor results
-                    
-                        return new ResponseData(TaskEnum.SUCCESS.getMessage(),
+                switch (code) {
+                    case "00":
+                        return new ResponseData("Task deleted successfully",
                                 TaskEnum.SUCCESS.getCode(),
                                 null);
-                    
-                } else if ("01".equals(code)) {
-                    return new ResponseData(TaskEnum.NOT_FOUND.getMessage(), TaskEnum.NOT_FOUND.getCode(), null);
-                } else {
-                    return new ResponseData(TaskEnum.FAILED_OPERATION.getMessage(),
-                            TaskEnum.FAILED_OPERATION.getCode(),
-                            null);
+                    case "01":
+                        return new ResponseData(TaskEnum.NOT_FOUND.getMessage(),
+                                TaskEnum.NOT_FOUND.getCode(),
+                                null);
+                    default:
+                        return new ResponseData(TaskEnum.NOT_FOUND.getMessage(),
+                                TaskEnum.FAILED_OPERATION.getCode(),
+                                null);
                 }
             }
-        }catch(
-
-    Exception e)
-    {
-        e.printStackTrace();
-        return new ResponseData("Database error: " + e.getMessage(),
-                TaskEnum.GENERIC_EXCEPTION.getCode(),
-                null);
+        } catch (Exception e) {
+            return new ResponseData("Database error: " + e.getMessage(),
+                    TaskEnum.GENERIC_EXCEPTION.getCode(),
+                    null);
+        }
     }
-}
 
 }

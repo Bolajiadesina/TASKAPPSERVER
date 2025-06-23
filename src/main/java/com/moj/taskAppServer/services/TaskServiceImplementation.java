@@ -9,8 +9,6 @@ import com.moj.taskAppServer.models.ResponseData;
 import com.moj.taskAppServer.models.Task;
 import com.moj.taskAppServer.repositories.TaskRepository;
 
-
-
 @Service
 public class TaskServiceImplementation implements TaskService {
 
@@ -25,7 +23,7 @@ public class TaskServiceImplementation implements TaskService {
     public ResponseEntity<ResponseData> getAllTasks() {
         // Logic to retrieve all tasks
         ResponseData response = taskRepository.findAll();
-        if(!"00".equals(response.getResponseCode())) {
+        if (!"00".equals(response.getResponseCode())) {
             return ResponseEntity.internalServerError().body(response);
         }
 
@@ -53,22 +51,18 @@ public class TaskServiceImplementation implements TaskService {
 
     @Override
     public ResponseEntity<ResponseData> deleteTask(Long id) {
-        // Logic to delete a task by id
 
-        return null;
+        return ResponseEntity.ok(taskRepository.delete(id));
     }
 
     @Override
     public ResponseEntity<ResponseData> getTaskById(Long id) {
-        System.out.println("task Id"+id);
-        ResponseData response= taskRepository.findById(id);
-         if (!"00".equals(response.getResponseCode())) {
-            return ResponseEntity.internalServerError().body(response);
+     
+        ResponseData response = taskRepository.findById(id);
+        if (!"00".equals(response.getResponseCode())) {
+            return ResponseEntity.ok(response);
         }
         return ResponseEntity.ok(response);
     }
-    
 
-    
-    
 }
