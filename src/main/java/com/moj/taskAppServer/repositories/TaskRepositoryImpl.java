@@ -89,6 +89,10 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public ResponseData findById(Long id) {
+        if (id == null) {
+            return new ResponseData(TaskEnum.NULL_OBJECT.getMessage(), TaskEnum.NULL_OBJECT.getCode(), null);
+        }
+
         try (Connection conn = taskDatabase.connect()) {
 
             conn.setAutoCommit(false);
@@ -194,15 +198,71 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public ResponseData update(Long id, Task task) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        if (task == null || task.getTaskName() == null || task.getTaskDescription() == null
+                || task.getTaskStatus() == null
+                || task.getTaskDueDate() == null) {
+
+            return new ResponseData(TaskEnum.NULL_OBJECT.getMessage(), TaskEnum.NULL_OBJECT.getCode(), null);
+        }
+
+        try (Connection conn = taskDatabase.connect()) {
+            // Prepare the call
+            String sql = "{ ? = call public.update_task(?, ?,?, ?, ?) }";
+
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                // Set input parameters
+                stmt.registerOutParameter(1, Types.VARCHAR);
+                // return code
+
+                // Set input parameters
+                stmt.setLong(2, task.getId());
+                stmt.setString(3, task.getTaskName());
+                stmt.setString(4, task.getTaskDescription());
+                stmt.setString(5, task.getTaskStatus().toUpperCase());
+                stmt.setString(6, task.getTaskDueDate());
+
+                stmt.execute();
+
+                // Get the returned value (e.g., new task ID)
+                String returnCode = stmt.getString(1);
+
+                if ("00".equals(returnCode)) {
+                    return new ResponseData(TaskEnum.SUCCESS.getMessage(), TaskEnum.SUCCESS.getCode(), task);
+                } else {
+                    // If there was an error, return the error message
+                    return new ResponseData(TaskEnum.FAILED_OPERATION.getMessage(), TaskEnum.FAILED_OPERATION.getCode(),
+                            null);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ResponseData("Database error: " + e.getMessage(), TaskEnum.SQL_EXCEPTION.getCode(), null);
+        } catch (ClassNotFoundException e1) {
+
+            e1.printStackTrace();
+            return new ResponseData("Class not found: " + e1.getMessage(), TaskEnum.CLASS_NOT_FOUND_EXCEPTION.getCode(),
+                    null);
+        } catch (InstantiationException e1) {
+            e1.printStackTrace();
+            return new ResponseData("Instantiation error: " + e1.getMessage(),
+                    TaskEnum.INSTANTIATION_EXCEPTION.getCode(), null);
+        } catch (IllegalAccessException e1) {
+
+            e1.printStackTrace();
+            return new ResponseData("Illegal access error: " + e1.getMessage(),
+                    TaskEnum.ILLEGAL_ACCESS_EXCEPTION.getCode(), null);
+        } catch (Exception e1) {
+
+            e1.printStackTrace();
+
+            return new ResponseData("Unknown error: " + e1.getMessage(), TaskEnum.GENERIC_EXCEPTION.getCode(), null);
+        }
     }
 
     @Override
     public ResponseData delete(Long taskId) {
         try (Connection conn = taskDatabase.connect()) {
 
-        
             String sql = "{ ? = call public.delete_task_by_id(?) }";
 
             try (CallableStatement stmt = conn.prepareCall(sql)) {

@@ -183,3 +183,41 @@ EXCEPTION WHEN OTHERS THEN
     END IF;
 END;
 $$;
+
+
+CREATE OR REPLACE FUNCTION public.update_task(
+    p_task_id BIGINT,
+    p_task_title VARCHAR(255),
+    p_task_description VARCHAR(255),
+    p_task_status VARCHAR(100),
+    p_task_due_date VARCHAR(100) 
+)
+RETURNS character varying
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_rows_affected INTEGER;
+BEGIN
+    -- Update the task
+    UPDATE public.task
+    SET 
+        task_title = p_task_title,
+        task_description = p_task_description,
+        task_status = p_task_status,
+        task_due_date = p_task_due_date
+    WHERE task_id = p_task_id;
+    
+    -- Get number of rows updated
+    GET DIAGNOSTICS v_rows_affected = ROW_COUNT;
+    
+    -- Return appropriate status code
+    IF v_rows_affected > 0 THEN
+        RETURN '00';  -- Success
+    ELSE
+        RETURN '01';  -- No task found
+    END IF;
+    
+EXCEPTION WHEN OTHERS THEN
+    RETURN '99';  -- Database error
+END;
+$function$;
