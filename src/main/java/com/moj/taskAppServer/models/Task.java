@@ -7,7 +7,7 @@ import io.micrometer.common.lang.NonNull;
 public class Task {
 
     
-    private Long id;
+    private Double id;
 
     @NonNull
     private String taskName;
@@ -24,7 +24,7 @@ public class Task {
         // Default constructor
     }
 
-    public Task(Long id, String taskName, String taskDescription, String taskStatus, String taskDueDate) {
+    public Task(Double id, String taskName, String taskDescription, String taskStatus, String taskDueDate) {
         this.id = id;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -32,11 +32,11 @@ public class Task {
         this.taskDueDate = taskDueDate;
     }
 
-    public Long getId() {
+    public Double getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Double id) {
         this.id = id;
     }
 

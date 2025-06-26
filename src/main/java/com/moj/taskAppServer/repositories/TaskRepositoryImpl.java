@@ -119,7 +119,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                     try (ResultSet rs = stmt.getObject(3, ResultSet.class)) {
                         while (rs.next()) {
                             task = new Task();
-                            task.setId(rs.getLong("task_id"));
+                            task.setId(rs.getDouble("task_id"));
                             task.setTaskName(rs.getString("task_title"));
                             task.setTaskStatus(rs.getString("task_status"));
                             task.setTaskDescription(rs.getString("task_description"));
@@ -171,7 +171,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                     try (ResultSet rs = stmt.getObject(2, ResultSet.class)) {
                         while (rs.next()) {
                             Task task = new Task();
-                            task.setId(rs.getLong("task_id"));
+                            task.setId(rs.getDouble("task_id"));
                             task.setTaskName(rs.getString("task_title"));
                             task.setTaskStatus(rs.getString("task_status"));
                             task.setTaskDescription(rs.getString("task_description"));
@@ -197,7 +197,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public ResponseData update(Long id, Task task) {
+    public ResponseData update(Task task) {
         if (task == null || task.getTaskName() == null || task.getTaskDescription() == null
                 || task.getTaskStatus() == null
                 || task.getTaskDueDate() == null) {
@@ -212,10 +212,8 @@ public class TaskRepositoryImpl implements TaskRepository {
             try (CallableStatement stmt = conn.prepareCall(sql)) {
                 // Set input parameters
                 stmt.registerOutParameter(1, Types.VARCHAR);
-                // return code
-
                 // Set input parameters
-                stmt.setLong(2, task.getId());
+                stmt.setDouble(2, task.getId());
                 stmt.setString(3, task.getTaskName());
                 stmt.setString(4, task.getTaskDescription());
                 stmt.setString(5, task.getTaskStatus().toUpperCase());

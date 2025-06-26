@@ -16,7 +16,7 @@ public interface TaskRepository {
 
     ResponseData findAll();
 
-    ResponseData update(Long id, Task task);
+    ResponseData update(Task task);
 
     ResponseData delete(Long id);
 

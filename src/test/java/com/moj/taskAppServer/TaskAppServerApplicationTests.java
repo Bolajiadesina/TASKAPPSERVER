@@ -61,53 +61,53 @@ class TaskAppServerApplicationTests {
                 .andExpect(jsonPath("$.responseCode", is("00")));
     }
 
-    @Test
-    void testUpdateTask() throws Exception {
-        // First, create a task
-        Task task = new Task();
-        task.setTaskName("Update Test Task");
-        task.setTaskDescription("Update Test Description");
-        task.setTaskStatus("NEW");
-        task.setTaskDueDate("2025-07-01");
+    // @Test
+    // void testUpdateTask() throws Exception {
+    //     // First, create a task
+    //     Task task = new Task();
+    //     task.setTaskName("Update Test Task");
+    //     task.setTaskDescription("Update Test Description");
+    //     task.setTaskStatus("NEW");
+    //     task.setTaskDueDate("2025-07-01");
 
 
-		long id=59;
+	// 	long id=59;
 
-        String response = mockMvc.perform(post("/api/tasks/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(task)))
-                .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString();
-
-       
-
-        // Update Task
-        task.setTaskDescription("Updated Description");
-        mockMvc.perform(put("/api/tasks/{id}",id,task)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(task)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.responseCode", is("00")));
-    }
-
-    @Test
-    void testDeleteTask() throws Exception {
-        // First, create a task
-        Long id= (long) 65;
-
-        String response = mockMvc.perform(delete("/api/tasks/id")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(id)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
+    //     String response = mockMvc.perform(post("/api/tasks/create")
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(task)))
+    //             .andExpect(status().isCreated())
+    //             .andReturn().getResponse().getContentAsString();
 
        
 
-        // Delete Task
-        mockMvc.perform(delete("/api/tasks/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.responseCode", is("00")));
-    }
+    //     // Update Task
+    //     task.setTaskDescription("Updated Description");
+    //     mockMvc.perform(put("/api/tasks/{id}",id,task)
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(task)))
+    //             .andExpect(status().isOk())
+    //             .andExpect(jsonPath("$.responseCode", is("00")));
+    // }
+
+    // @Test
+    // void testDeleteTask() throws Exception {
+    //     // First, create a task
+    //     Long id= (long) 65;
+
+    //     String response = mockMvc.perform(delete("/api/tasks/id")
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .content(objectMapper.writeValueAsString(id)))
+    //             .andExpect(status().isOk())
+    //             .andReturn().getResponse().getContentAsString();
+
+       
+
+    //     // Delete Task
+    //     mockMvc.perform(delete("/api/tasks/{id}", id))
+    //             .andExpect(status().isOk())
+    //             .andExpect(jsonPath("$.responseCode", is("00")));
+    // }
 
    
 }

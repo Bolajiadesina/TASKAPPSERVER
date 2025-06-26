@@ -50,9 +50,9 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
-    public ResponseEntity<ResponseData> updateTask(Long id, Task task) {
+    public ResponseEntity<ResponseData> updateTask(Task task) {
         
-        return ResponseEntity.ok(taskRepository.update(id, task)); 
+        return ResponseEntity.ok(taskRepository.update(task)); 
     }
 
     @Override

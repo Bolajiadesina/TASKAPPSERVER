@@ -33,9 +33,9 @@ public class TaskControllers {
         return taskService.createTask(task);
     }
   
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseData> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    @PutMapping
+    public ResponseEntity<ResponseData> updateTask( @RequestBody Task task) {
+        return taskService.updateTask(task);
     }
    
     @DeleteMapping("/{id}")
