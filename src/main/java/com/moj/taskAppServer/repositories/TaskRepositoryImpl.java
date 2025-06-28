@@ -26,23 +26,23 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public ResponseData save(Task task) {
-        // Implementation for saving a task
+       
         if (task == null || task.getTaskName() == null || task.getTaskDescription() == null
                 || task.getTaskStatus() == null
                 || task.getTaskDueDate() == null) {
-            System.out.println("task: " + task);
+            
             return new ResponseData(TaskEnum.NULL_OBJECT.getMessage(), TaskEnum.NULL_OBJECT.getCode(), null);
         }
 
         try (Connection conn = taskDatabase.connect()) {
-            // Prepare the call
+          
             String sql = "{ ? = call public.save_task(?, ?, ?, ?) }";
 
             try (CallableStatement stmt = conn.prepareCall(sql)) {
-                // Set input parameters
-                stmt.registerOutParameter(1, Types.VARCHAR); // return code
+               
+                stmt.registerOutParameter(1, Types.VARCHAR); 
 
-                // Set input parameters
+               
                 stmt.setString(2, task.getTaskName());
                 stmt.setString(3, task.getTaskDescription());
                 stmt.setString(4, task.getTaskStatus().toUpperCase());
@@ -50,13 +50,12 @@ public class TaskRepositoryImpl implements TaskRepository {
 
                 stmt.execute();
 
-                // Get the returned value (e.g., new task ID)
                 String returnCode = stmt.getString(1);
 
                 if ("00".equals(returnCode)) {
                     return new ResponseData(TaskEnum.SUCCESS.getMessage(), TaskEnum.SUCCESS.getCode(), task);
                 } else {
-                    // If there was an error, return the error message
+                    
                     return new ResponseData(TaskEnum.FAILED_OPERATION.getMessage(), TaskEnum.FAILED_OPERATION.getCode(),
                             null);
                 }
@@ -88,24 +87,24 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public ResponseData findById(Long id) {
-        if (id == null) {
+    public ResponseData findById(String taskId) {
+        if (taskId == null) {
             return new ResponseData(TaskEnum.NULL_OBJECT.getMessage(), TaskEnum.NULL_OBJECT.getCode(), null);
         }
 
         try (Connection conn = taskDatabase.connect()) {
 
             conn.setAutoCommit(false);
-            // Prepare the call with proper syntax for procedure with OUT parameters
+            
             String sql = "call public.get_task_by_id(?,?, ?)";
 
             try (CallableStatement stmt = conn.prepareCall(sql)) {
 
-                stmt.setLong(1, id);
+                stmt.setString(1, taskId);
 
-                // Register OUT parameters in the correct order
-                stmt.registerOutParameter(2, Types.VARCHAR); // p_response_code
-                stmt.registerOutParameter(3, Types.REF_CURSOR); // p_task_cursor
+                
+                stmt.registerOutParameter(2, Types.VARCHAR); 
+                stmt.registerOutParameter(3, Types.REF_CURSOR); 
 
                 // Execute the procedure
                 stmt.execute();
@@ -119,7 +118,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                     try (ResultSet rs = stmt.getObject(3, ResultSet.class)) {
                         while (rs.next()) {
                             task = new Task();
-                            task.setId(rs.getDouble("task_id"));
+                            task.setTaskId(rs.getString("task_id"));
                             task.setTaskName(rs.getString("task_title"));
                             task.setTaskStatus(rs.getString("task_status"));
                             task.setTaskDescription(rs.getString("task_description"));
@@ -171,7 +170,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                     try (ResultSet rs = stmt.getObject(2, ResultSet.class)) {
                         while (rs.next()) {
                             Task task = new Task();
-                            task.setId(rs.getDouble("task_id"));
+                            task.setTaskId(rs.getString("task_id"));
                             task.setTaskName(rs.getString("task_title"));
                             task.setTaskStatus(rs.getString("task_status"));
                             task.setTaskDescription(rs.getString("task_description"));
@@ -198,7 +197,7 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public ResponseData update(Task task) {
-        if (task == null || task.getTaskName() == null || task.getTaskDescription() == null
+        if (task == null || task.getTaskId() == null || task.getTaskName() == null || task.getTaskDescription() == null
                 || task.getTaskStatus() == null
                 || task.getTaskDueDate() == null) {
 
@@ -213,7 +212,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                 // Set input parameters
                 stmt.registerOutParameter(1, Types.VARCHAR);
                 // Set input parameters
-                stmt.setDouble(2, task.getId());
+                stmt.setString(2, task.getTaskId());
                 stmt.setString(3, task.getTaskName());
                 stmt.setString(4, task.getTaskDescription());
                 stmt.setString(5, task.getTaskStatus().toUpperCase());
@@ -258,17 +257,17 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public ResponseData delete(Long taskId) {
+    public ResponseData delete(String taskId) {
         try (Connection conn = taskDatabase.connect()) {
 
-            String sql = "{ ? = call public.delete_task_by_id(?) }";
+            String sql = "{? = call public.delete_task_by_id(?)}";
 
             try (CallableStatement stmt = conn.prepareCall(sql)) {
                 // Register return parameter
                 stmt.registerOutParameter(1, Types.VARCHAR);
 
                 // Set input parameter
-                stmt.setLong(2, taskId);
+                stmt.setString(2, taskId);
 
                 // Execute
                 stmt.execute();
@@ -278,7 +277,7 @@ public class TaskRepositoryImpl implements TaskRepository {
 
                 switch (code) {
                     case "00":
-                        return new ResponseData("Task deleted successfully",
+                        return new ResponseData(TaskEnum.DELETED.getMessage(),
                                 TaskEnum.SUCCESS.getCode(),
                                 null);
                     case "01":
@@ -286,7 +285,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 TaskEnum.NOT_FOUND.getCode(),
                                 null);
                     default:
-                        return new ResponseData(TaskEnum.NOT_FOUND.getMessage(),
+                        return new ResponseData(TaskEnum.FAILED_OPERATION.getCode(),
                                 TaskEnum.FAILED_OPERATION.getCode(),
                                 null);
                 }

@@ -7,22 +7,24 @@ import org.springframework.stereotype.Service;
 
 import com.moj.taskAppServer.models.ResponseData;
 import com.moj.taskAppServer.models.Task;
+import com.moj.taskAppServer.models.TaskEnum;
 import com.moj.taskAppServer.repositories.TaskRepository;
+import com.moj.taskAppServer.utils.StringUtilities;
 
 @Service
 public class TaskServiceImplementation implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final StringUtilities stringUtilities;
 
-    public TaskServiceImplementation(TaskRepository taskRepository) {
+    public TaskServiceImplementation(TaskRepository taskRepository, StringUtilities stringUtilities) {
         this.taskRepository = taskRepository;
+        this.stringUtilities = stringUtilities;
     }
 
-    // Implement the methods defined in the TaskService interface
     @Override
     public ResponseEntity<ResponseData> getAllTasks() {
-        // Logic to retrieve all tasks
-       
+
         ResponseData response = taskRepository.findAll();
         if (!"00".equals(response.getResponseCode())) {
             return ResponseEntity.internalServerError().body(response);
@@ -36,12 +38,10 @@ public class TaskServiceImplementation implements TaskService {
 
     @Override
     public ResponseEntity<ResponseData> createTask(Task task) {
-        ResponseData response=null;
-         int count=5;
-        for (int i=0; i<=count; i++) {
-              response = taskRepository.save(task);
-        }
-      
+        ResponseData response = null;
+
+        response = taskRepository.save(task);
+
         if (!"00".equals(response.getResponseCode())) {
             return ResponseEntity.internalServerError().body(response);
         }
@@ -51,25 +51,40 @@ public class TaskServiceImplementation implements TaskService {
 
     @Override
     public ResponseEntity<ResponseData> updateTask(Task task) {
-        
-        return ResponseEntity.ok(taskRepository.update(task)); 
+
+        return ResponseEntity.ok(taskRepository.update(task));
     }
 
     @Override
-    public ResponseEntity<ResponseData> deleteTask(Long id) {
+    public ResponseEntity<ResponseData> deleteTask(String taskId) {
 
-        return ResponseEntity.ok(taskRepository.delete(id));
-    }
+        ResponseData responseData = new ResponseData();
 
-    @Override
-    public ResponseEntity<ResponseData> getTaskById(Long id) {
-        
-     
-        ResponseData response = taskRepository.findById(id);
-        if (!"00".equals(response.getResponseCode())) {
-            return ResponseEntity.ok(response);
+        if (!stringUtilities.validateTaskId(taskId)) {
+            responseData.setResponseCode(TaskEnum.INVALID_ID.getCode());
+            responseData.setResponseMessage(TaskEnum.INVALID_ID.getMessage());
+            return ResponseEntity.ok(responseData);
         }
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(taskRepository.delete(taskId));
+    }
+
+    @Override
+    public ResponseEntity<ResponseData> getTaskById(String taskId) {
+        ResponseData responseData = new ResponseData();
+
+        if (!stringUtilities.validateTaskId(taskId)) {
+            responseData.setResponseCode(TaskEnum.INVALID_ID.getCode());
+            responseData.setResponseMessage(TaskEnum.INVALID_ID.getMessage());
+            return ResponseEntity.ok(responseData);
+        }
+
+        responseData = taskRepository.findById(taskId);
+        if (!"00".equals(responseData.getResponseCode())) {
+
+            return ResponseEntity.ok(responseData);
+        }
+        return ResponseEntity.ok(responseData);
     }
 
 }

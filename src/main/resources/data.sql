@@ -19,7 +19,7 @@ CREATE OR REPLACE PROCEDURE public.insert_task(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- Insert the new task
+    
     INSERT INTO public.task (
         task_title,
         task_description,
@@ -32,12 +32,12 @@ BEGIN
         p_task_due_date
     );
     
-    -- Set success values
+    
     p_return_code := '00';
     p_return_message := 'Success';
     
 EXCEPTION WHEN OTHERS THEN
-    -- Set error values
+    
     p_return_code := '99';
     p_return_message := SQLERRM;
 END;
@@ -49,22 +49,22 @@ CREATE OR REPLACE FUNCTION public.save_task(
     p_task_status VARCHAR(100),
     p_task_due_date VARCHAR(100)
 )
-RETURNS VARCHAR(2)  -- Explicit return type with length
+RETURNS VARCHAR(2)  
 LANGUAGE plpgsql
 AS $$
 DECLARE
     v_return_code VARCHAR(2);
 BEGIN
-    -- Validate required fields
+    
     IF p_task_title IS NULL OR p_task_title = '' THEN
-        RETURN '01';  -- Specific code for missing title
+        RETURN '01';  
     END IF;
     
     IF p_task_description IS NULL OR p_task_description = '' THEN
-        RETURN '02';  -- Specific code for missing description
+        RETURN '02';
     END IF;
 
-    -- Insert the new task
+    
     INSERT INTO public.task (
         task_title,
         task_description,
@@ -80,13 +80,12 @@ BEGIN
     RETURN '00';  -- Success
     
 EXCEPTION WHEN OTHERS THEN
-    -- Log error if needed (uncomment to use)
-    -- INSERT INTO error_logs (error_message) VALUES (SQLERRM);
+   
     
     RETURN '99';  -- General error
 END;
 $$;
--- Calling from another PL/pgSQL block:
+
 DO $$
 DECLARE
     v_code VARCHAR(2);
@@ -186,7 +185,7 @@ $$;
 
 
 CREATE OR REPLACE FUNCTION public.update_task(
-    p_task_id BIGINT,
+    p_task_id character varying,
     p_task_title VARCHAR(255),
     p_task_description VARCHAR(255),
     p_task_status VARCHAR(100),
@@ -198,7 +197,7 @@ AS $function$
 DECLARE
     v_rows_affected INTEGER;
 BEGIN
-    -- Update the task
+    
     UPDATE public.task
     SET 
         task_title = p_task_title,
@@ -221,3 +220,72 @@ EXCEPTION WHEN OTHERS THEN
     RETURN '99';  -- Database error
 END;
 $function$;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION public.delete_task_by_id(p_task_id character varying)
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_rows_affected INTEGER;
+BEGIN
+   
+    DELETE FROM public.task 
+    WHERE task_id = p_task_id::uuid;
+    
+    
+    GET DIAGNOSTICS v_rows_affected = ROW_COUNT;
+    
+    
+    IF v_rows_affected > 0 THEN
+        RETURN '00';  -- Success
+    ELSE
+        RETURN '01';  
+    END IF;
+    
+EXCEPTION WHEN OTHERS THEN
+    RETURN '99';  
+END;
+$function$
+;
+
+
+CREATE OR REPLACE PROCEDURE public.get_task_by_id(IN p_task_id character varying, OUT p_response_code character varying, OUT p_task_cursor refcursor)
+ LANGUAGE plpgsql
+AS $procedure$
+BEGIN
+    -- Check if task exists
+    IF NOT EXISTS (SELECT 1 FROM public.task WHERE task_id = p_task_id::uuid) THEN
+        p_response_code := '01';
+        RETURN;
+    END IF;
+
+    -- Open cursor for the specific task
+    OPEN p_task_cursor FOR
+    SELECT 
+        task_id,
+        task_title,
+        task_description,
+        task_status,
+        task_created_date,
+        task_due_date
+    FROM public.task
+    WHERE task_id = p_task_id:uuid;
+    
+    -- Set success values
+    p_response_code := '00';
+
+EXCEPTION WHEN OTHERS THEN
+    -- Set error values
+    p_response_code := '99';
+    
+    -- Ensure cursor is closed on error
+    IF p_task_cursor IS NOT NULL THEN
+        CLOSE p_task_cursor;
+    END IF;
+END;
+$procedure$
+;

@@ -6,8 +6,7 @@ import io.micrometer.common.lang.NonNull;
 
 public class Task {
 
-    
-    private Double id;
+    private String taskId;
 
     @NonNull
     private String taskName;
@@ -18,26 +17,24 @@ public class Task {
     @NonNull
     private String taskDueDate;
 
-
-
     public Task() {
         // Default constructor
     }
 
-    public Task(Double id, String taskName, String taskDescription, String taskStatus, String taskDueDate) {
-        this.id = id;
+    public Task(String taskId, String taskName, String taskDescription, String taskStatus, String taskDueDate) {
+        this.taskId = taskId;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = taskStatus;
         this.taskDueDate = taskDueDate;
     }
 
-    public Double getId() {
-        return id;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setId(Double id) {
-        this.id = id;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public String getTaskName() {
@@ -75,28 +72,35 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "id=" + id +
+                "taskId=" + taskId +
                 ", taskName='" + taskName + '\'' +
                 ", taskDescription='" + taskDescription + '\'' +
                 ", taskStatus='" + taskStatus + '\'' +
                 ", taskDueDate='" + taskDueDate + '\'' +
                 '}';
     }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Task)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Task))
+            return false;
 
         Task task = (Task) o;
 
-        if (taskStatus != task.taskStatus) return false;
-        if (!id.equals(task.id)) return false;
-        if (!taskName.equals(task.taskName)) return false;
+        if (taskStatus != task.taskStatus)
+            return false;
+        if (!taskId.equals(task.taskId))
+            return false;
+        if (!taskName.equals(task.taskName))
+            return false;
         return taskDescription.equals(task.taskDescription);
     }
+
     @Override
     public int hashCode() {
-        int result = id.hashCode();
+        int result = taskId.hashCode();
         result = 31 * result + taskName.hashCode();
         result = 31 * result + taskDescription.hashCode();
         result = 31 * result + taskStatus.hashCode();

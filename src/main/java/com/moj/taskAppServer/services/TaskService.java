@@ -16,7 +16,7 @@ public interface TaskService {
 
     ResponseEntity<ResponseData> updateTask( Task task);
 
-    ResponseEntity<ResponseData> deleteTask(Long id);
+    ResponseEntity<ResponseData> deleteTask(String taskId);
 
-    ResponseEntity<ResponseData> getTaskById(Long id);
+    ResponseEntity<ResponseData> getTaskById(String taskId);
 }

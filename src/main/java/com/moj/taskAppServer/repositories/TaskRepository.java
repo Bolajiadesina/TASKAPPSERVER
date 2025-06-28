@@ -12,12 +12,12 @@ public interface TaskRepository {
 
     ResponseData save(Task task);
 
-    ResponseData findById(Long id);
+    ResponseData findById(String taskIdid);
 
     ResponseData findAll();
 
     ResponseData update(Task task);
 
-    ResponseData delete(Long id);
+    ResponseData delete(String taskId);
 
 }

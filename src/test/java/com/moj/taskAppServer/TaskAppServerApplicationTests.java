@@ -33,7 +33,7 @@ class TaskAppServerApplicationTests {
         Task task = new Task();
         task.setTaskName("Integration Test Task");
         task.setTaskDescription("Integration Test Description");
-        task.setTaskStatus("NEW");
+        task.setTaskStatus("PENDING");
         task.setTaskDueDate("2025-07-01");
 
         mockMvc.perform(post("/api/tasks/create")
@@ -54,7 +54,7 @@ class TaskAppServerApplicationTests {
     @Test
     void testGetTaskById() throws Exception {
         // First, create a task to ensure there is at least one
-        long id=59;
+        String id="44e308d2-50cc-4349-9cd4-9fc6ccc221c3";
 
         mockMvc.perform(get("/api/tasks/{id}", id))
                 .andExpect(status().isOk())
