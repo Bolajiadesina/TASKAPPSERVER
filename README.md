@@ -73,6 +73,7 @@ A task includes:
     The details about each api can be retrieved from the Swagger page, by launching the link below once the application is running. 
 
     ```http://localhost:8080/swagger-ui/index.html#/```
+    ```http://localhost:8080/v3/api-docs```
 
 ## Example: Create Task Request
 
