@@ -22,6 +22,9 @@ public class TaskServiceImplementation implements TaskService {
         this.stringUtilities = stringUtilities;
     }
 
+    /*
+     * getAllTasks: retrieves all task from the DB
+     */
     @Override
     public ResponseEntity<ResponseData> getAllTasks() {
 
@@ -36,6 +39,12 @@ public class TaskServiceImplementation implements TaskService {
         return ResponseEntity.ok(response);
     }
 
+    /*
+     * createTask: creates task using the required parameter(taskName,
+     * taskDesription,
+     * taskStatus and assigns a due date )
+     */
+
     @Override
     public ResponseEntity<ResponseData> createTask(Task task) {
         ResponseData response = null;
@@ -49,11 +58,25 @@ public class TaskServiceImplementation implements TaskService {
         return ResponseEntity.created(null).body(response);
     }
 
+    /*
+     * updateTask 1: updates the full details of task using the required parameter(taskName,
+     * taskDesription,
+     * taskStatus and assigns a due date )
+     * 
+     * updateTask 2: update only status
+     */
+
     @Override
     public ResponseEntity<ResponseData> updateTask(Task task) {
 
         return ResponseEntity.ok(taskRepository.update(task));
     }
+
+
+
+    /*
+     * deleteTask 1: deletes task using the full details of task using the taskId(
+     */
 
     @Override
     public ResponseEntity<ResponseData> deleteTask(String taskId) {
@@ -69,6 +92,11 @@ public class TaskServiceImplementation implements TaskService {
         return ResponseEntity.ok(taskRepository.delete(taskId));
     }
 
+
+
+    /*
+     * getTaskById 1: retrives task using the full details of task using the taskId
+     */
     @Override
     public ResponseEntity<ResponseData> getTaskById(String taskId) {
         ResponseData responseData = new ResponseData();

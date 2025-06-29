@@ -16,4 +16,12 @@ public class StringUtilities {
     return pattern.matcher(taskId).matches();
 
    }
+
+
+  public String reverseDate(String inputDate) {
+    if (inputDate == null) return "";
+    String[] parts = inputDate.split("-");
+    if (parts.length != 3) return inputDate; // return as is if not in expected format
+    return parts[2] + "-" + parts[1] + "-" + parts[0];
+}
 }

@@ -165,7 +165,7 @@ BEGIN
         task_created_date,
         task_due_date
     FROM public.task
-    WHERE task_id = p_task_id;
+    WHERE task_id = p_task_id:uuid;
     
     -- Set success values
     p_response_code := '00';
@@ -204,7 +204,7 @@ BEGIN
         task_description = p_task_description,
         task_status = p_task_status,
         task_due_date = p_task_due_date
-    WHERE task_id = p_task_id;
+    WHERE task_id = p_task_id:uuid;
     
     -- Get number of rows updated
     GET DIAGNOSTICS v_rows_affected = ROW_COUNT;
