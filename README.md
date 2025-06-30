@@ -68,6 +68,7 @@ A task includes:
   ```
 - Integration tests cover all main endpoints and utility functions
 
+Live Production Testing : http://3.10.228.46:8080/api/tasks/getAll
 
 ## Api Documentation
     The details about each api can be retrieved from the Swagger page, by launching the link below once the application is running. 
