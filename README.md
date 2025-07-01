@@ -75,6 +75,8 @@ Live Production Testing : http://3.10.228.46:8080/api/tasks/getAll
 
     ```http://localhost:8080/swagger-ui/index.html#/```
     ```http://localhost:8080/v3/api-docs```
+    ```http://3.10.228.46:8080/swagger-ui/index.html#/```
+    ```http://3.10.228.46:8080//v3/api-docs```
 
 ## Example: Create Task Request
 
