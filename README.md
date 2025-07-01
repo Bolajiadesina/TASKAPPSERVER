@@ -73,10 +73,10 @@ Live Production Testing : http://3.10.228.46:8080/api/tasks/getAll
 ## Api Documentation
     The details about each api can be retrieved from the Swagger page, by launching the link below once the application is running. 
 
-    ```http://localhost:8080/swagger-ui/index.html#/```
-    ```http://localhost:8080/v3/api-docs```
-    ```http://3.10.228.46:8080/swagger-ui/index.html#/```
-    ```http://3.10.228.46:8080//v3/api-docs```
+    http://localhost:8080/swagger-ui/index.html#/
+    http://localhost:8080/v3/api-docs
+    http://3.10.228.46:8080/swagger-ui/index.html#/
+    http://3.10.228.46:8080//v3/api-docs
 
 ## Example: Create Task Request
 
