@@ -4,20 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.moj.taskAppServer.models.Task;
 import com.moj.taskAppServer.utils.StringUtilities;
 
-import jakarta.validation.constraints.AssertTrue;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 
 @SpringBootTest
 public class TaskIdValidatorTest {
 
     @Autowired
     private StringUtilities util;
-
-
 
     @Test
     public void testValidTaskId() {
@@ -50,18 +46,117 @@ public class TaskIdValidatorTest {
 
     @Test
     public void testEdgeCases() {
-       
+
         assertTrue(util.validateTaskId("12aB45Cd-Ef89-Ab12-Cd34-EF56ab78cd90"));
 
-        
         assertFalse(util.validateTaskId("12aB45Cd-Ef89-Ab12-Cd34-EF56ab78cd9g"));
     }
 
-
     @Test
-    public void testreverseDate(){
+    public void testreverseDate() {
         String result = "2025-06-28";
-        String response= util.reverseDate(result);
+        String response = util.reverseDate(result);
         assertEquals("28-06-2025", response);
     }
+
+    @Test
+    public void testreverseDateWithNullInput() {
+        String result = null;
+        String response = util.reverseDate(result);
+        assertEquals("", response);
+
+    }
+
+    @Test
+    public void testreverseDateWithInvalidFormat() {
+        String result = "2025/06/28";
+        String response = util.reverseDate(result);
+        assertEquals("2025/06/28", response);
+    }
+
+    @Test
+    public void testValidateTaskWithValidTask() {
+        Task task = new Task();
+        task.setTaskId("12345678-90ab-cdef-1234-567890abcdef");
+        task.setTaskName("Test Task");
+        task.setTaskDescription("This is a test task.");
+        task.setTaskStatus("PENDING");
+        task.setTaskDueDate("2025-07-01");
+        assertTrue(util.validateTask(task));
+    }
+
+    @Test
+    public void testValidateTaskWithInvalidTask() {
+        Task task = new Task();
+        task.setTaskId("12345678-90ab-cdef-1234-567890abcdef");
+        task.setTaskName(""); // Invalid: empty name
+        task.setTaskDescription("This is a test task.");
+        task.setTaskStatus("PENDING");
+        task.setTaskDueDate("2025-07-01");
+        assertFalse(util.validateTask(task));
+
+    }
+
+    @Test
+    public void testValidateTaskWithNullTask() {
+        Task task = null;
+        assertFalse(util.validateTask(task));
+    }
+
+    @Test
+    public void testValidateTaskWithEmptyTask() {
+        Task task = new Task();
+        task.setTaskId("");
+        task.setTaskName("");
+        task.setTaskDescription("");
+        task.setTaskStatus("");
+        task.setTaskDueDate("");
+        assertFalse(util.validateTask(task));
+    }
+
+    @Test
+    public void testValidateTaskWithIncompleteTask() {
+        Task task = new Task();
+        task.setTaskId("12345678-90ab-cdef-1234-567890abcdef");
+        task.setTaskName("Test Task");
+        // Missing description, status, and due date
+        assertFalse(util.validateTask(task));
+    }
+
+    @Test
+    public void testValidateTaskWithAllFieldsEmpty() {
+        Task task = new Task();
+        task.setTaskId("");
+        task.setTaskName("");
+        task.setTaskDescription("");
+        task.setTaskStatus("");
+        task.setTaskDueDate("");
+        assertFalse(util.validateTask(task));
+
+    }
+
+    @Test
+    public void testValidateTaskWithAllFieldsNull() {
+        Task task = new Task();
+        task.setTaskId(null);
+        task.setTaskName(null);
+        task.setTaskDescription(null);
+        task.setTaskStatus(null);
+        task.setTaskDueDate(null);
+        assertFalse(util.validateTask(task));
+
+    }
+
+   @Test
+   public void testCheckBankHoliday(){
+    String bankHoliday="2025-12-31";
+
+    String [] holidays={"2025-12-31","2025-02-29","2025-05-31"};
+
+    boolean bankDay=util.checkBankHoliday(holidays,bankHoliday);
+
+    assertTrue(bankDay,"True");
+
+   }
+
 }

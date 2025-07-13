@@ -49,6 +49,13 @@ public class TaskServiceImplementation implements TaskService {
     public ResponseEntity<ResponseData> createTask(Task task) {
         ResponseData response = null;
 
+        if (!stringUtilities.validateTask(task)) {
+            response = new ResponseData();
+            response.setResponseCode(TaskEnum.NULL_OBJECT.getCode());
+            response.setResponseMessage(TaskEnum.NULL_OBJECT.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+
         response = taskRepository.save(task);
 
         if (!"00".equals(response.getResponseCode())) {
@@ -59,7 +66,8 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     /*
-     * updateTask 1: updates the full details of task using the required parameter(taskName,
+     * updateTask 1: updates the full details of task using the required
+     * parameter(taskName,
      * taskDesription,
      * taskStatus and assigns a due date )
      * 
@@ -71,8 +79,6 @@ public class TaskServiceImplementation implements TaskService {
 
         return ResponseEntity.ok(taskRepository.update(task));
     }
-
-
 
     /*
      * deleteTask 1: deletes task using the full details of task using the taskId(
@@ -91,8 +97,6 @@ public class TaskServiceImplementation implements TaskService {
 
         return ResponseEntity.ok(taskRepository.delete(taskId));
     }
-
-
 
     /*
      * getTaskById 1: retrives task using the full details of task using the taskId
