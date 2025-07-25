@@ -147,16 +147,5 @@ public class TaskIdValidatorTest {
 
     }
 
-   @Test
-   public void testCheckBankHoliday(){
-    String bankHoliday="2025-12-31";
-
-    String [] holidays={"2025-12-31","2025-02-29","2025-05-31"};
-
-    boolean bankDay=util.checkBankHoliday(holidays,bankHoliday);
-
-    assertTrue(bankDay,"True");
-
-   }
-
+  
 }

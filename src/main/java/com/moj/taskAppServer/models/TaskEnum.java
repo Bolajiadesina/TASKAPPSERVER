@@ -14,12 +14,13 @@ public enum TaskEnum {
         CREATED("00", "Task created successfully."),
         UPDATED("00", "Task update successfully."),
         DELETED("00", "Task deleted successfully."),
-        INSTANTIATION_EXCEPTION("409", "The server encountered an internal error."),
+        INSTANTIATION_EXCEPTION("500", "The server encountered an internal error."),
         NOT_FOUND("01", "The Task could not be found."),
         ILLEGAL_ACCESS_EXCEPTION("500", "The server encountered an internal error."),
         SQL_EXCEPTION("500", "The server encountered an internal error."),
-        CLASS_NOT_FOUND_EXCEPTION("403", "The server encountered an internal error."),
+        CLASS_NOT_FOUND_EXCEPTION("500", "The server encountered an internal error."),
         GENERIC_EXCEPTION("500", "An unexpected error occurred.");
+        
 
         TaskEnum(String code, String message) {
             this.code = code;

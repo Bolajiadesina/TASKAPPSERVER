@@ -32,8 +32,7 @@ public class StringUtilities {
     if (task == null) {
       return false;
     }
-    if ((task.getTaskId() == null || task.getTaskId().isEmpty())
-        || (task.getTaskName() == null || task.getTaskName().isEmpty())
+    if ((task.getTaskName() == null || task.getTaskName().isEmpty())
         || (task.getTaskDescription() == null || task.getTaskDescription().isEmpty())
         || (task.getTaskStatus() == null || task.getTaskStatus().isEmpty())
         || (task.getTaskDueDate() == null || task.getTaskDueDate().isEmpty())) {
@@ -43,15 +42,5 @@ public class StringUtilities {
 
   }
 
-  public boolean checkBankHoliday(String[] holidays, String selectedDate) {
-
-    for (String bankHoliday : holidays) {
-      if (selectedDate.equals(bankHoliday)) {
-        return true;
-      }
-    }
-
-    return false;
-
-  }
+  
 }

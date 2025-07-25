@@ -2,6 +2,7 @@ package com.moj.taskAppServer.services;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class TaskServiceImplementation implements TaskService {
             response = new ResponseData();
             response.setResponseCode(TaskEnum.NULL_OBJECT.getCode());
             response.setResponseMessage(TaskEnum.NULL_OBJECT.getMessage());
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.ok().body(response);
         }
 
         response = taskRepository.save(task);

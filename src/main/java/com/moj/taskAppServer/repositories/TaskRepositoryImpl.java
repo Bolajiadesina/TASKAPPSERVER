@@ -52,7 +52,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                 stmt.setString(4, (task.getTaskStatus() == null || task.getTaskStatus().isEmpty()) ? ""
                         : task.getTaskStatus().toUpperCase());
                 stmt.setString(5, (task.getTaskDueDate() == null || task.getTaskDueDate().isEmpty()) ? ""
-                        : utils.reverseDate(task.getTaskDueDate()));
+                        : (task.getTaskDueDate()));
 
                 stmt.execute();
 
@@ -229,6 +229,10 @@ public class TaskRepositoryImpl implements TaskRepository {
 
                 if ("00".equals(returnCode)) {
                     return new ResponseData(TaskEnum.SUCCESS.getMessage(), TaskEnum.SUCCESS.getCode(), task);
+                } else if("01".equals(returnCode)){
+
+                    return new ResponseData(TaskEnum.NOT_FOUND.getMessage(), TaskEnum.NOT_FOUND.getCode(),
+                            null);
                 } else {
 
                     return new ResponseData(TaskEnum.FAILED_OPERATION.getMessage(), TaskEnum.FAILED_OPERATION.getCode(),
